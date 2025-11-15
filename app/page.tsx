@@ -63,7 +63,6 @@ function SalonStatusMap() {
           height="100%"
           className="w-full h-full"
           style={{ border: 0 }}
-          allowFullScreen=""
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
         ></iframe>
