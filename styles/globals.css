@@ -1,1 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cinzel+Decorative:wght@400;700&display=swap');
 @import "tailwindcss";
+@import "swiper/css";
+@import "swiper/css/pagination";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.swiper-pagination-bullet {
+  background: #D4AF37 !important;
+  opacity: .5;
+}
+
+.swiper-pagination-bullet-active {
+  background: #D4AF37 !important;
+  opacity: 1;
+}
+
