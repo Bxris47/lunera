@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import NewsletterForm from './NewsletterForm'
+import { useEffect, useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import NewsletterForm from "./NewsletterForm"
 
 export default function NewsletterPopup() {
   const [visible, setVisible] = useState(false)
@@ -21,13 +21,20 @@ export default function NewsletterPopup() {
         >
           <button
             onClick={() => setVisible(false)}
-            className="absolute top-2 right-2 text-gray-400 hover:text-black transition text-xl"
+            className="absolute top-2 right-2 text-gray-400 hover:text-black text-xl"
           >
             ×
           </button>
-          <h3 className="text-xl md:text-2xl font-serif font-semibold text-black mb-4">Newsletter</h3>
-          <p className="text-gray-600 font-light mb-4">Bleibe informiert über unsere exklusiven Angebote.</p>
-          <NewsletterForm />
+
+          <h3 className="text-xl md:text-2xl font-serif font-semibold mb-3">
+            Newsletter
+          </h3>
+
+          <p className="text-gray-600 font-light mb-4">
+            Bleibe informiert über exklusive Angebote.
+          </p>
+
+          <NewsletterForm onDone={() => setVisible(false)} />
         </motion.div>
       )}
     </AnimatePresence>

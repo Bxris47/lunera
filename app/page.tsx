@@ -3,6 +3,7 @@
 import { motion } from "framer-motion"
 import { useState, useEffect } from "react"
 import Image from "next/image"
+import Newsletter from "./components/NewsletterPopup"
 import "../styles/globals.css"
 
 /* -------------------------------------------------------------
@@ -86,36 +87,42 @@ export default function Home() {
       {/* -------------------------------------------------------------
          HEADER – PREMIUM NAVIGATION
       -------------------------------------------------------------- */}
-      <header className="w-full py-10 bg-white/70 backdrop-blur-xl border-b border-[#f0f0f0]">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col items-center gap-4">
+    <header className="w-full py-10 bg-white/70 backdrop-blur-xl border-b border-[#f0f0f0]">
+      <div className="max-w-7xl mx-auto px-6 flex flex-col items-center gap-4">
 
-          {/* Logo klein */}
-          <Image
-            src="/lunera-logo.png"
-            width={120}
-            height={120}
-            alt="Lunera Beauty Logo"
-            className="opacity-90"
-          />
+        {}
+        <Image
+          src="/lunera-logo.png"
+          width={120}
+          height={120}
+          alt="Lunera Beauty Logo"
+          className="opacity-90"
+        />
 
-          {/* Navigation Premium */}
-          <nav className="flex items-center gap-6 text-lg font-medium text-[#111] tracking-wide">
+        {}
+        <nav className="flex items-center gap-4 text-lg font-medium text-[#1A1A1A] tracking-wide whitespace-nowrap">
 
-            <a href="/" className="text-[#D4AF37] font-semibold">Home</a>
-            <span className="w-2 h-2 bg-[#D4AF37] rounded-full"></span>
+          <a href="/" className="text-[#D4AF37] font-semibold">
+            Home
+          </a>
 
-            <a href="/termin" className="hover:text-[#D4AF37] transition">
-              Termin buchen
-            </a>
-            <span className="w-2 h-2 bg-[#D4AF37] rounded-full"></span>
+          <span className="w-2 h-2 bg-[#D4AF37] rounded-full"></span>
 
-            <a href="/vorschau" className="hover:text-[#D4AF37] transition">
-              Vorschau
-            </a>
+          <a href="/termin" className="hover:text-[#D4AF37] transition">
+            Termin buchen
+          </a>
 
-          </nav>
-        </div>
-      </header>
+          <span className="w-2 h-2 bg-[#D4AF37] rounded-full"></span>
+
+          <a href="/vorschau" className="hover:text-[#D4AF37] transition">
+            Vorschau
+          </a>
+
+        </nav>
+
+      </div>
+    </header>
+
 
 
 
@@ -161,7 +168,7 @@ export default function Home() {
           {[
             {
               title: "Wimpernverlängerung",
-              text: "Von 1:1 bis Mega-Volume – elegante Wimpern, perfekt abgestimmt."
+              text: "Von 1:1 bis Mega-Volume elegante Wimpern, perfekt abgestimmt."
             },
             {
               title: "Handpflege",
@@ -169,7 +176,7 @@ export default function Home() {
             },
             {
               title: "Fußpflege",
-              text: "Wellness für deine Füße – sauber, schonend, professionell."
+              text: "Wellness für deine Füße sauber, schonend, professionell."
             },
             {
               title: "Augenpaket",
@@ -188,7 +195,8 @@ export default function Home() {
 
         </div>
       </section>
-
+      
+      <Newsletter />
 
       {/* STATUS + MAP */}
       <SalonStatusMap />

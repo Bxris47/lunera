@@ -21,8 +21,8 @@ export default function Impressum() {
 
         <span className="w-2 h-2 bg-[#D4AF37] rounded-full"></span>
 
-        <a href="/impressum" className="hover:text-[#D4AF37] transition">
-            Impressum
+        <a href="/vorschau" className="hover:text-[#D4AF37] transition">
+          Vorschau
         </a>
         </nav>
     </div>
