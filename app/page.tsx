@@ -3,6 +3,10 @@
 import { motion } from "framer-motion"
 import { useState, useEffect } from "react"
 import Image from "next/image"
+<<<<<<< HEAD
+=======
+import Newsletter from "./components/NewsletterPopup"
+>>>>>>> 0fd74bbe3167266fff43d62984a98d9114d742cc
 import "../styles/globals.css"
 
 /* -------------------------------------------------------------
@@ -65,14 +69,21 @@ function SalonStatusMap() {
       {/* MAP */}
       <div className="rounded-xl overflow-hidden shadow-xl w-full h-96 bg-[#F7F7F7]">
         <iframe
+<<<<<<< HEAD
           src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2505.123456789!2d7.699123!3d52.290456!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47b9845d3c1a2bcd%3A0xabcdef123456789!2sWidukindstraße+27%2C+49477+Ibbenb%C3%BCren!5e0!3m2!1sde!2sde!4v1690000000000!5m2!1sde!2sde"
+=======
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2429.123456789!2d13.404954!3d52.520008!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47a851d2b1a1f6d3%3A0xabcdef123456789!2sMusterstraße+10%2C+10115+Berlin!5e0!3m2!1sde!2sde!4v1690000000000!5m2!1sde!2sde"
+>>>>>>> 0fd74bbe3167266fff43d62984a98d9114d742cc
           className="w-full h-full border-0"
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
         />
       </div>
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 0fd74bbe3167266fff43d62984a98d9114d742cc
     </section>
   )
 }
@@ -195,12 +206,18 @@ export default function Home() {
 
         </div>
       </section>
+<<<<<<< HEAD
 
+=======
+      
+      <Newsletter />
+>>>>>>> 0fd74bbe3167266fff43d62984a98d9114d742cc
 
       {/* STATUS + MAP */}
       <SalonStatusMap />
 
 
+<<<<<<< HEAD
       {/* FOOTER */}
       <footer className="bg-[#FAFAFA] border-t border-[#EEE] mt-20">
         <div className="max-w-6xl mx-auto px-6 py-12 text-center text-[#6E6E6E] flex flex-col sm:flex-row justify-between items-center gap-4">
@@ -209,6 +226,18 @@ export default function Home() {
             <a href="/impressum" className="hover:text-[#1A1A1A]">Impressum</a>
             <a href="/datenschutz" className="hover:text-[#1A1A1A]">Datenschutz</a>
             <a href="/preisliste" className="hover:text-[#1A1A1A]">Preisliste</a>
+=======
+      {/* -------------------------------------------------------------
+         FOOTER
+      -------------------------------------------------------------- */}
+      <footer className="bg-[#FAFAFA] border-t border-[#EEE] mt-32">
+        <div className="max-w-7xl mx-auto px-6 py-12 flex flex-col sm:flex-row items-center justify-between text-[#6E6E6E] text-lg">
+          <div>© {new Date().getFullYear()} Lunera Beauty</div>
+
+          <div className="flex gap-8">
+            <a href="/impressum" className="hover:text-[#111]">Impressum</a>
+            <a href="/datenschutz" className="hover:text-[#111]">Datenschutz</a>
+>>>>>>> 0fd74bbe3167266fff43d62984a98d9114d742cc
           </div>
         </div>
       </footer>
