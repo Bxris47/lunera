@@ -56,7 +56,6 @@ export default function VorschauPremium() {
   return (
     <div className="min-h-screen w-full bg-white text-[#1A1A1A]">
       {/* HEADER */}
-<<<<<<< HEAD
       <header className="w-full pt-10 pb-8 bg-white/70 backdrop-blur-xl border-b border-[#f0f0f0]">
         <div className="max-w-7xl mx-auto px-6 flex flex-col items-center gap-4">
           <Image src="/lunera-logo.png" width={120} height={120} alt="Lunera Beauty" />
@@ -67,16 +66,6 @@ export default function VorschauPremium() {
             <a href="/termin" className="hover:text-[#D4AF37] transition">Termin buchen</a>
             <span className="w-2 h-2 bg-[#D4AF37] rounded-full" />
             <a href="/vorschau" className="text-[#D4AF37] transition">Vorschau</a>
-=======
-      <header className="w-full pt-10 pb-8">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col items-center">
-          <nav className="flex items-center gap-4 text-lg font-medium tracking-wide">
-            <a href="/" className="hover:text-[#D4AF37] transition">Home</a>
-            <span className="w-2 h-2 bg-[#D4AF37] rounded-full"></span>
-            <a href="/termin" className="hover:text-[#D4AF37] transition">Termin buchen</a>
-            <span className="w-2 h-2 bg-[#D4AF37] rounded-full"></span>
-            <a href="/vorschau" className="text-[#D4AF37] font-semibold">Vorschau</a>
->>>>>>> 0fd74bbe3167266fff43d62984a98d9114d742cc
           </nav>
         </div>
       </header>
@@ -153,10 +142,7 @@ export default function VorschauPremium() {
           <div className="flex gap-6">
             <a href="/impressum" className="hover:text-[#1A1A1A]">Impressum</a>
             <a href="/datenschutz" className="hover:text-[#1A1A1A]">Datenschutz</a>
-<<<<<<< HEAD
             <a href="/preisliste" className="hover:text-[#1A1A1A]">Preisliste</a>
-=======
->>>>>>> 0fd74bbe3167266fff43d62984a98d9114d742cc
           </div>
         </div>
       </footer>
