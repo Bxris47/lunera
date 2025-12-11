@@ -1,16 +1,15 @@
 "use client";
 import Image from "next/image";
 
-export default function Impressum() {
+export default function Datenschutz() {
   return (
     <div className="min-h-screen w-full bg-white text-[#1A1A1A]">
 
-      {/* HEADER NAVIGATION */}
+      {/* HEADER */}
       <header className="w-full pt-10 pb-8">
         <div className="max-w-7xl mx-auto px-6 flex flex-col items-center gap-4">
           <Image src="/lunera-logo.png" width={120} height={120} alt="Lunera Beauty" />
-          
-          {/* NAVIGATION */}
+
           <nav className="flex items-center gap-4 text-lg font-medium text-[#1A1A1A] tracking-wide">
             <a href="/" className="hover:text-[#D4AF37] transition">Home</a>
             <span className="w-2 h-2 bg-[#D4AF37] rounded-full"></span>
@@ -23,54 +22,48 @@ export default function Impressum() {
 
       {/* CONTENT */}
       <div className="max-w-3xl mx-auto px-6">
-        <h1 className="text-5xl font-serif font-bold mb-6 text-center text-[#1A1A1A] tracking-tight">
-          Impressum
+        <h1 className="text-5xl font-serif font-bold mb-6 text-center tracking-tight">
+          Datenschutz
         </h1>
 
         <p className="mb-10 text-center text-lg text-[#7A6E63]">
-          Angaben gemäß § 5 TMG
+          Kurze Datenschutzerklärung gemäß DSGVO
         </p>
 
-        {/* CARD */}
-        <div className="bg-[#ffffff] rounded-3xl shadow-sm border border-[#E8E0D7] p-12 space-y-10">
+        <div className="bg-white rounded-3xl shadow-sm border border-[#E8E0D7] p-12 space-y-10">
 
           <Section
-            title="Betreiber der Website"
-            text={`Lunera Beauty\nMusterstraße 10\n10115 Berlin`}
+            title="1. Verantwortliche Stelle"
+            text="Die Verantwortlichen für diese Website finden Sie im Impressum."
           />
 
           <Section
-            title="Kontakt"
-            text={`Telefon: 01234 / 567890\nE-Mail: info@lunerabeauty.de`}
+            title="2. Erhebung und Speicherung personenbezogener Daten"
+            text="Unsere Website dient ausschließlich der Bereitstellung von Informationen.
+Wir erfassen selbst keine personenbezogenen Daten über Formulare oder Konten."
           />
 
           <Section
-            title="Vertreten durch"
-            text="Maria Lunera"
+            title="3. Kontakt über WhatsApp"
+            text={`Wenn Sie über WhatsApp einen Termin anfragen, werden Ihre Daten (z. B. Telefonnummer, Nachricht) 
+direkt durch WhatsApp verarbeitet.  
+Bitte beachten Sie hierzu die Datenschutzrichtlinie von WhatsApp/Meta.`}
           />
 
           <Section
-            title="Umsatzsteuer-ID"
-            text="Umsatzsteuer-Identifikationsnummer gemäß §27 a Umsatzsteuergesetz: DE123456789"
+            title="4. Server-Logfiles"
+            text="Der Hosting-Anbieter erhebt automatisch grundlegende technische Daten (z. B. IP-Adresse, Zeitpunkt des Zugriffs). Diese Daten dienen der Sicherheit und werden nicht zur Auswertung genutzt."
           />
 
           <Section
-            title="Haftung für Inhalte"
-            text="Als Diensteanbieter sind wir gemäß § 7 Abs.1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen
-                  Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht verpflichtet,
-                  übermittelte oder gespeicherte fremde Informationen zu überwachen."
+            title="5. Weitergabe von Daten"
+            text="Es findet keine Weitergabe personenbezogener Daten an Dritte statt."
           />
 
           <Section
-            title="Haftung für Links"
-            text="Unser Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben.
-                  Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen."
-          />
-
-          <Section
-            title="Urheberrecht"
-            text="Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen
-                  Urheberrecht. Beiträge Dritter sind als solche gekennzeichnet."
+            title="6. Ihre Rechte"
+            text={`Sie haben das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung der Verarbeitung Ihrer Daten.
+Wenden Sie sich dazu an die im Impressum genannten Kontaktmöglichkeiten.`}
           />
 
         </div>
@@ -94,9 +87,7 @@ export default function Impressum() {
 function Section({ title, text }: any) {
   return (
     <div className="space-y-2">
-      <h2 className="text-2xl font-serif font-semibold text-[#1A1A1A]">
-        {title}
-      </h2>
+      <h2 className="text-2xl font-serif font-semibold">{title}</h2>
       <p className="text-[#4A423B] leading-relaxed whitespace-pre-line">
         {text}
       </p>

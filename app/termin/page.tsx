@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { Phone, Mail, MapPin, Instagram, MessageCircle } from "lucide-react";
+import { Instagram, MessageCircle } from "lucide-react";
 
 export default function TerminPage() {
   const contacts = [
@@ -23,11 +23,21 @@ export default function TerminPage() {
     {
       title: "TikTok",
       text: "@lunera",
-      icon: "/tiktok.png", // <-- Aus dem public-Ordner
+      icon: "/tiktok.png", // Aus public-Ordner
       href: "https://tiktok.com/@lunera",
       color: "#000000",
     },
   ];
+
+  const containerVariants = {
+    hidden: {},
+    visible: { transition: { staggerChildren: 0.15 } },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
 
   return (
     <div className="min-h-screen bg-white text-[#111]">
@@ -59,35 +69,47 @@ export default function TerminPage() {
       </section>
 
       {/* CONTACT BUTTON GRID */}
-      <section className="max-w-5xl mx-auto px-6 py-16">
+      <motion.section
+        className="max-w-5xl mx-auto px-6 py-16"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-
           {contacts.map((c, i) => (
             <motion.a
-              href={c.href}
               key={i}
+              href={c.href}
               target="_blank"
-              whileHover={{ scale: 1.04 }}
-              className="p-8 rounded-3xl border border-[#ECECEC] shadow-md hover:shadow-xl bg-white flex flex-col items-center text-center gap-4 transition-all"
+              variants={itemVariants}
+              whileHover={{
+                scale: 1.08,
+                rotate: 2,
+                boxShadow: "0px 20px 30px rgba(0,0,0,0.15)",
+              }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              className="p-8 rounded-3xl border border-[#ECECEC] bg-white flex flex-col items-center text-center gap-4 cursor-pointer"
             >
-              <div
+              <motion.div
                 className="w-16 h-16 flex items-center justify-center rounded-full text-white"
                 style={{ backgroundColor: c.color }}
+                whileHover={{ scale: 1.2, rotate: 10 }}
+                transition={{ type: "spring", stiffness: 300 }}
               >
                 {typeof c.icon === "string" ? (
                   <Image src={c.icon} width={32} height={32} alt={c.title} />
                 ) : (
                   c.icon
                 )}
-              </div>
+              </motion.div>
 
               <h3 className="text-xl font-serif font-semibold">{c.title}</h3>
               <p className="text-[#555] text-lg font-light">{c.text}</p>
             </motion.a>
           ))}
-
         </div>
-      </section>
+      </motion.section>
 
       {/* FOOTER */}
       <footer className="bg-[#FAFAFA] border-t border-[#EEE] mt-20">
@@ -100,7 +122,6 @@ export default function TerminPage() {
           </div>
         </div>
       </footer>
-
     </div>
   );
 }
