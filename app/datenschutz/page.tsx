@@ -21,53 +21,54 @@ export default function Datenschutz() {
       </header>
 
       {/* CONTENT */}
-      <div className="max-w-3xl mx-auto px-6">
-        <h1 className="text-5xl font-serif font-bold mb-6 text-center tracking-tight">
+      <main className="max-w-3xl mx-auto px-6 py-16 space-y-8">
+        <h1 className="text-5xl font-serif font-bold text-center tracking-tight">
           Datenschutz
         </h1>
 
-        <p className="mb-10 text-center text-lg text-[#7A6E63]">
-          Kurze Datenschutzerklärung gemäß DSGVO
+        <p className="text-center text-lg text-[#7A6E63]">
+          Der Schutz deiner persönlichen Daten ist uns wichtig. Wir verarbeiten nur die Daten, die für die Nutzung unserer Website und Dienstleistungen notwendig sind.
         </p>
 
-        <div className="bg-white rounded-3xl shadow-sm border border-[#E8E0D7] p-12 space-y-10">
+        <div className="bg-white rounded-3xl shadow-sm border border-[#E8E0D7] p-12 space-y-6">
 
           <Section
-            title="1. Verantwortliche Stelle"
-            text="Die Verantwortlichen für diese Website finden Sie im Impressum."
+            title="1. Cookies"
+            text={`Unsere Website verwendet Cookies ausschließlich zur Grundfunktionalität, z. B. um deine Auswahl beim Cookie-Hinweis zu speichern. Cookies dienen nicht zur Erstellung von Nutzerprofilen und werden nicht an Dritte weitergegeben.`}
           />
 
           <Section
-            title="2. Erhebung und Speicherung personenbezogener Daten"
-            text="Unsere Website dient ausschließlich der Bereitstellung von Informationen.
-Wir erfassen selbst keine personenbezogenen Daten über Formulare oder Konten."
+            title="2. Server-Logfiles"
+            text={`Beim Besuch unserer Website werden automatisch technische Daten erfasst, wie IP-Adresse, Datum, Uhrzeit und aufgerufene Seiten. Diese Daten werden ausschließlich zu Sicherheitszwecken genutzt und helfen uns, die Website stabil und sicher zu betreiben.`}
           />
 
           <Section
-            title="3. Kontakt über WhatsApp"
-            text={`Wenn Sie über WhatsApp einen Termin anfragen, werden Ihre Daten (z. B. Telefonnummer, Nachricht) 
-direkt durch WhatsApp verarbeitet.  
-Bitte beachten Sie hierzu die Datenschutzrichtlinie von WhatsApp/Meta.`}
+            title="3. Kontakt über Formulare oder WhatsApp"
+            text={`Wenn du uns über ein Kontaktformular oder WhatsApp erreichst, werden die angegebenen Daten (z. B. Name, Telefonnummer, Nachricht) nur für die Bearbeitung deiner Anfrage verwendet. Eine Weitergabe an Dritte erfolgt nicht. Bitte beachte, dass bei der Nutzung von WhatsApp die Datenverarbeitung durch WhatsApp/Meta erfolgt.`}
           />
 
           <Section
-            title="4. Server-Logfiles"
-            text="Der Hosting-Anbieter erhebt automatisch grundlegende technische Daten (z. B. IP-Adresse, Zeitpunkt des Zugriffs). Diese Daten dienen der Sicherheit und werden nicht zur Auswertung genutzt."
+            title="4. Analyse & Tracking"
+            text={`Wir verwenden keine personenbezogenen Tracking-Tools, außer um die Grundfunktionalität der Website sicherzustellen. Statistische Auswertungen über Besucherzahlen erfolgen anonymisiert, sodass keine Rückschlüsse auf einzelne Personen möglich sind.`}
           />
 
           <Section
             title="5. Weitergabe von Daten"
-            text="Es findet keine Weitergabe personenbezogener Daten an Dritte statt."
+            text={`Es findet keine Weitergabe deiner personenbezogenen Daten an Dritte statt, außer wenn wir gesetzlich dazu verpflichtet sind. Deine Daten bleiben bei uns sicher und werden nur für den beschriebenen Zweck genutzt.`}
           />
 
           <Section
-            title="6. Ihre Rechte"
-            text={`Sie haben das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung der Verarbeitung Ihrer Daten.
-Wenden Sie sich dazu an die im Impressum genannten Kontaktmöglichkeiten.`}
+            title="6. Deine Rechte"
+            text={`Du hast das Recht auf Auskunft über die gespeicherten Daten, Berichtigung, Löschung sowie Einschränkung der Verarbeitung. Außerdem kannst du jederzeit der Nutzung deiner Daten widersprechen. Kontaktiere uns dafür über die im Impressum angegebenen Kontaktmöglichkeiten.`}
+          />
+
+          <Section
+            title="7. Änderungen dieser Datenschutzerklärung"
+            text={`Wir behalten uns vor, diese Datenschutzerklärung bei Bedarf anzupassen, z. B. bei Änderungen der Website oder der rechtlichen Vorgaben. Bitte schaue regelmäßig hier vorbei, um informiert zu bleiben.`}
           />
 
         </div>
-      </div>
+      </main>
 
       {/* FOOTER */}
       <footer className="bg-[#FAFAFA] border-t border-[#EEE] mt-20">
@@ -84,13 +85,11 @@ Wenden Sie sich dazu an die im Impressum genannten Kontaktmöglichkeiten.`}
   );
 }
 
-function Section({ title, text }: any) {
+function Section({ title, text }: { title: string; text: string }) {
   return (
     <div className="space-y-2">
       <h2 className="text-2xl font-serif font-semibold">{title}</h2>
-      <p className="text-[#4A423B] leading-relaxed whitespace-pre-line">
-        {text}
-      </p>
+      <p className="text-[#4A423B] leading-relaxed whitespace-pre-line">{text}</p>
     </div>
   );
 }

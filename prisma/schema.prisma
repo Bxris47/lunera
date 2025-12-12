@@ -1,0 +1,18 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Visit {
+  id         Int      @id @default(autoincrement())
+  ip         String
+  country    String?  // ISO country or name
+  city       String?  // optional
+  path       String?  // visited path, e.g. /, /vorschau
+  ua         String?  // user agent
+  createdAt  DateTime @default(now())
+}

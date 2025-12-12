@@ -4,6 +4,9 @@ import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import Image from "next/image"
 import TypingText from "../components/ui/shadcn-io/typing-text"
+import CookieConsent from "./components/CookieConsent"
+import { sendVisit } from "../lib/TrackingClient"
+import { getCookie, setCookie } from "cookies-next"
 
 function SalonStatusMap() {
   const [isOpen, setIsOpen] = useState(false)
@@ -68,6 +71,25 @@ function SalonStatusMap() {
 }
 
 export default function Home() {
+  const [cookiesAccepted, setCookiesAccepted] = useState(false)
+
+  // Prüfen, ob Cookie schon gesetzt ist
+  useEffect(() => {
+    const accepted = getCookie("cookiesAccepted") === "true"
+    setCookiesAccepted(accepted)
+
+    if (accepted) {
+      sendVisit().then(() => console.log("Visit gesendet"))
+    }
+  }, [])
+
+  // Funktion zum Setzen der Cookies vom Consent Component
+  const handleAcceptCookies = () => {
+    setCookie("cookiesAccepted", "true", { path: "/" })
+    setCookiesAccepted(true)
+    sendVisit().then(() => console.log("Visit gesendet nach Consent"))
+  }
+
   return (
     <div className="min-h-screen w-full bg-white text-[#111] overflow-x-hidden">
       {/* HEADER */}
@@ -128,6 +150,9 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      {/* Cookies */}
+      <CookieConsent onAccept={handleAcceptCookies} />
 
       {/* SALON STATUS + MAP */}
       <SalonStatusMap />

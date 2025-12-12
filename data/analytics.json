@@ -1,0 +1,27 @@
+{
+  "today": {
+    "2025-12-12": 2
+  },
+  "month": {
+    "2025-12": 2
+  },
+  "total": 2,
+  "visitors": [
+    {
+      "date": "2025-12-12T07:10:06.028Z",
+      "page": "admin-dashboard",
+      "role": "admin",
+      "ip": "::ffff:192.168.0.14",
+      "country": "unknown",
+      "city": "Unbekannt"
+    },
+    {
+      "date": "2025-12-12T07:10:50.987Z",
+      "page": "unknown",
+      "role": "guest",
+      "ip": "::ffff:192.168.0.14",
+      "country": "unknown",
+      "city": "Unbekannt"
+    }
+  ]
+}
