@@ -1,11 +1,17 @@
 {
   "today": {
-    "2025-12-12": 2
+    "2025-12-12": 2,
+    "2025-12-13": 1,
+    "2025-12-15": 1,
+    "2025-12-21": 1,
+    "2025-12-22": 1,
+    "2026-01-16": 3
   },
   "month": {
-    "2025-12": 2
+    "2025-12": 6,
+    "2026-01": 3
   },
-  "total": 2,
+  "total": 9,
   "visitors": [
     {
       "date": "2025-12-12T07:10:06.028Z",
@@ -20,6 +26,62 @@
       "page": "unknown",
       "role": "guest",
       "ip": "::ffff:192.168.0.14",
+      "country": "unknown",
+      "city": "Unbekannt"
+    },
+    {
+      "date": "2025-12-13T00:28:41.854Z",
+      "page": "unknown",
+      "role": "guest",
+      "ip": "::ffff:10.14.0.2",
+      "country": "unknown",
+      "city": "Unbekannt"
+    },
+    {
+      "date": "2025-12-15T02:26:23.939Z",
+      "page": "unknown",
+      "role": "guest",
+      "ip": "::ffff:192.168.0.14",
+      "country": "unknown",
+      "city": "Unbekannt"
+    },
+    {
+      "date": "2025-12-21T01:39:55.038Z",
+      "page": "unknown",
+      "role": "guest",
+      "ip": "::ffff:192.168.0.14",
+      "country": "unknown",
+      "city": "Unbekannt"
+    },
+    {
+      "date": "2025-12-22T01:24:53.813Z",
+      "page": "unknown",
+      "role": "guest",
+      "ip": "::ffff:192.168.0.14",
+      "country": "unknown",
+      "city": "Unbekannt"
+    },
+    {
+      "date": "2026-01-16T01:09:02.895Z",
+      "page": "unknown",
+      "role": "guest",
+      "ip": "::1",
+      "country": "unknown",
+      "city": "Unbekannt"
+    },
+    {
+      "date": "2026-01-16T01:45:14.559Z",
+      "page": "/unknown",
+      "role": "guest",
+      "ipHash": "38475a8ff58c4568e302268f6466578191b5fa3d7517ce54d19e4a2b3aa50b18",
+      "country": "unknown",
+      "city": "Unbekannt"
+    },
+    {
+      "date": "2026-01-16T02:26:20.728Z",
+      "page": "unknown",
+      "role": "guest",
+      "ipHash": "38475a8ff58c4568e302268f6466578191b5fa3d7517ce54d19e4a2b3aa50b18",
       "country": "unknown",
       "city": "Unbekannt"
     }

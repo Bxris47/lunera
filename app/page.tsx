@@ -1,170 +1,502 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { motion } from "framer-motion"
+import { useEffect, useMemo, useState } from "react"
+import Link from "next/link"
 import Image from "next/image"
+import Script from "next/script"
+import { motion } from "framer-motion"
+import { MapPin, ShieldCheck, Sparkles, Star, Menu, X } from "lucide-react"
+
 import TypingText from "../components/ui/shadcn-io/typing-text"
 import CookieConsent from "./components/CookieConsent"
 import { sendVisit } from "../lib/TrackingClient"
 import { getCookie, setCookie } from "cookies-next"
 
-function SalonStatusMap() {
-  const [isOpen, setIsOpen] = useState(false)
+type Weekday =
+  | "Montag"
+  | "Dienstag"
+  | "Mittwoch"
+  | "Donnerstag"
+  | "Freitag"
+  | "Samstag"
+  | "Sonntag"
 
-  useEffect(() => {
-    const now = new Date()
-    const day = now.getDay()
-    const hour = now.getHours()
-    const open =
-      (day >= 1 && day <= 5 && hour >= 10 && hour < 18) ||
-      (day === 6 && hour >= 10 && hour < 16)
-    setIsOpen(open)
-  }, [])
+type Hours = {
+  day: Weekday
+  open: string | null
+  close: string | null
+}
 
-  const openingHours = {
-    Montag: "10:00 – 18:00",
-    Dienstag: "10:00 – 18:00",
-    Mittwoch: "10:00 – 18:00",
-    Donnerstag: "10:00 – 18:00",
-    Freitag: "10:00 – 18:00",
-    Samstag: "10:00 – 16:00",
-    Sonntag: "Geschlossen"
+const SALON = {
+  name: "Lunera Beauty",
+  street: "Widukindstraße 27",
+  zipCity: "49477 Ibbenbüren",
+  country: "DE",
+  timezone: "Europe/Berlin",
+  mapsEmbedSrc:
+    "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2505.123456789!2d7.699123!3d52.290456!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47b9845d3c1a2bcd%3A0xabcdef123456789!2sWidukindstraße+27%2C+49477+Ibbenb%C3%BCren!5e0!3m2!1sde!2sde!4v1690000000000!5m2!1sde!2sde"
+} as const
+
+const HOURS: Hours[] = [
+  { day: "Montag", open: "10:00", close: "18:00" },
+  { day: "Dienstag", open: "10:00", close: "18:00" },
+  { day: "Mittwoch", open: "10:00", close: "18:00" },
+  { day: "Donnerstag", open: "10:00", close: "18:00" },
+  { day: "Freitag", open: "10:00", close: "18:00" },
+  { day: "Samstag", open: "10:00", close: "16:00" },
+  { day: "Sonntag", open: null, close: null }
+]
+
+const SERVICES = [
+  { title: "Wimpern", text: "Von 1:1 bis Mega-Volume – präzise, leicht, harmonisch.", icon: Sparkles },
+  { title: "Hände", text: "Maniküre, UV-Lack, Nail-Design – clean & langlebig.", icon: ShieldCheck },
+  { title: "Füße", text: "Gepflegt mit Wellness-Finish – dezent und sauber.", icon: ShieldCheck },
+  { title: "Augenpaket", text: "Brauen & Wimpern färben + formen – definiert in Minuten.", icon: Sparkles }
+] as const
+
+function timeToMinutes(t: string) {
+  const [h, m] = t.split(":").map(Number)
+  return h * 60 + m
+}
+
+function getBerlinNowParts() {
+  const fmt = new Intl.DateTimeFormat("de-DE", {
+    timeZone: SALON.timezone,
+    weekday: "long",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false
+  })
+
+  const parts = fmt.formatToParts(new Date())
+  const weekday = (parts.find((p) => p.type === "weekday")?.value ?? "").toLowerCase()
+  const hour = Number(parts.find((p) => p.type === "hour")?.value ?? "0")
+  const minute = Number(parts.find((p) => p.type === "minute")?.value ?? "0")
+
+  const map: Record<string, Weekday> = {
+    montag: "Montag",
+    dienstag: "Dienstag",
+    mittwoch: "Mittwoch",
+    donnerstag: "Donnerstag",
+    freitag: "Freitag",
+    samstag: "Samstag",
+    sonntag: "Sonntag"
   }
 
+  return { day: map[weekday] ?? "Montag", minutesNow: hour * 60 + minute }
+}
+
+function computeOpenState() {
+  const { day, minutesNow } = getBerlinNowParts()
+  const today = HOURS.find((h) => h.day === day)!
+
+  const openM = today.open ? timeToMinutes(today.open) : null
+  const closeM = today.close ? timeToMinutes(today.close) : null
+
+  if (openM === null || closeM === null) {
+    const idx = HOURS.findIndex((h) => h.day === day)
+    for (let i = 1; i <= 7; i++) {
+      const next = HOURS[(idx + i) % 7]
+      if (next.open && next.close) {
+        return {
+          label: "Geschlossen",
+          hint: `Nächste Öffnung: ${next.day} um ${next.open}`,
+          dotClass: "bg-red-500"
+        }
+      }
+    }
+    return { label: "Geschlossen", hint: "", dotClass: "bg-red-500" }
+  }
+
+  const isOpen = minutesNow >= openM && minutesNow < closeM
+  if (isOpen) return { label: "Geöffnet", hint: `Heute bis ${today.close}`, dotClass: "bg-emerald-500" }
+
+  if (minutesNow < openM) return { label: "Geschlossen", hint: `Heute ab ${today.open}`, dotClass: "bg-red-500" }
+
+  const idx = HOURS.findIndex((h) => h.day === day)
+  for (let i = 1; i <= 7; i++) {
+    const next = HOURS[(idx + i) % 7]
+    if (next.open && next.close) {
+      return { label: "Geschlossen", hint: `Nächste Öffnung: ${next.day} um ${next.open}`, dotClass: "bg-red-500" }
+    }
+  }
+
+  return { label: "Geschlossen", hint: "", dotClass: "bg-red-500" }
+}
+
+function MiniStat({ icon: Icon, title, text }: { icon: any; title: string; text: string }) {
   return (
-    <section className="max-w-6xl mx-auto mt-20 px-6 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-      <div className="flex flex-col gap-4">
-        <h3 className="text-3xl sm:text-4xl font-serif font-bold text-[#111]">Öffnungszeiten</h3>
-        <ul className="text-[#555] font-light space-y-1 text-base sm:text-lg">
-          {Object.entries(openingHours).map(([day, time]) => (
-            <li key={day} className="flex justify-between">
-              <span className="font-medium">{day}:</span>
-              <span>{time}</span>
-            </li>
-          ))}
-        </ul>
-
-        <div className="flex items-center gap-3 mt-3">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={isOpen ? { opacity: 1 } : { opacity: [1, 0.5, 1] }}
-            transition={{ duration: 1.5, repeat: isOpen ? 0 : Infinity }}
-            className="w-3 h-6 rounded-md"
-            style={{ background: isOpen ? "#4CD964" : "#FF3B30" }}
-          />
-          <span className="text-[#111] font-medium text-sm sm:text-base">
-            {isOpen ? "Der Salon ist geöffnet" : "Der Salon ist geschlossen"}
-          </span>
-        </div>
+    <div className="flex items-start gap-3 rounded-2xl border border-[#EEE] bg-white p-4 shadow-sm">
+      <div className="mt-0.5 rounded-xl border border-[#EEE] bg-[#FAFAFA] p-2">
+        <Icon className="h-5 w-5 text-[#111]" />
       </div>
+      <div className="min-w-0">
+        <div className="text-sm font-semibold text-[#111]">{title}</div>
+        <div className="text-sm text-[#666] leading-relaxed">{text}</div>
+      </div>
+    </div>
+  )
+}
 
-      <div className="rounded-xl overflow-hidden shadow-xl w-full h-64 sm:h-80 md:h-96 bg-[#F7F7F7]">
-        <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2505.123456789!2d7.699123!3d52.290456!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47b9845d3c1a2bcd%3A0xabcdef123456789!2sWidukindstraße+27%2C+49477+Ibbenb%C3%BCren!5e0!3m2!1sde!2sde!4v1690000000000!5m2!1sde!2sde"
-          className="w-full h-full border-0"
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-        />
+function SalonInfo() {
+  const [state, setState] = useState(() => computeOpenState())
+
+  useEffect(() => {
+    const id = setInterval(() => setState(computeOpenState()), 60_000)
+    return () => clearInterval(id)
+  }, [])
+
+  return (
+    <section className="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 items-stretch">
+        <div className="rounded-3xl border border-[#EEE] bg-white p-5 sm:p-8 shadow-sm">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+            <div>
+              <h2 className="text-2xl sm:text-3xl font-serif font-bold text-[#111]">Öffnungszeiten</h2>
+              <p className="mt-2 text-sm sm:text-base text-[#666]">
+                {SALON.street}, {SALON.zipCity}
+              </p>
+            </div>
+
+            <div className="sm:text-right">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#EEE] bg-[#FAFAFA] px-3 py-1.5">
+                <span className={`h-2.5 w-2.5 rounded-full ${state.dotClass}`} aria-hidden />
+                <span className="text-sm font-semibold text-[#111]">{state.label}</span>
+              </div>
+              <div className="mt-1 text-xs sm:text-sm text-[#666]">{state.hint}</div>
+            </div>
+          </div>
+
+          {/* Mobile-first hours list: bigger tap targets */}
+          <ul className="mt-6 divide-y divide-[#F2F2F2] text-sm sm:text-base">
+            {HOURS.map((h) => {
+              const label = h.open && h.close ? `${h.open} – ${h.close}` : "Geschlossen"
+              return (
+                <li key={h.day} className="py-3 flex items-center justify-between gap-4">
+                  <span className="font-medium text-[#111]">{h.day}</span>
+                  <span className="text-[#666]">{label}</span>
+                </li>
+              )
+            })}
+          </ul>
+
+          {/* Only one CTA, but good on mobile */}
+          <div className="mt-6">
+            <Link
+              href="/termin"
+              className="w-full sm:w-auto inline-flex items-center justify-center rounded-full border border-[#111] bg-white px-5 py-3 text-sm font-semibold text-[#111] hover:bg-[#111] hover:text-white transition"
+            >
+              Termin anfragen
+            </Link>
+          </div>
+        </div>
+
+        <div className="rounded-3xl overflow-hidden border border-[#EEE] bg-[#F7F7F7] shadow-sm min-h-[280px] sm:min-h-[320px]">
+          <iframe
+            title="Google Maps Standort"
+            src={SALON.mapsEmbedSrc}
+            className="w-full h-full border-0"
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          />
+        </div>
       </div>
     </section>
   )
 }
 
+function MobileMenu({
+  open,
+  onClose
+}: {
+  open: boolean
+  onClose: () => void
+}) {
+  return (
+    <div
+      className={`sm:hidden fixed inset-0 z-50 transition ${
+        open ? "pointer-events-auto" : "pointer-events-none"
+      }`}
+      aria-hidden={!open}
+    >
+      <div
+        className={`absolute inset-0 bg-black/30 transition-opacity ${open ? "opacity-100" : "opacity-0"}`}
+        onClick={onClose}
+      />
+      <div
+        className={`absolute right-0 top-0 h-full w-[86%] max-w-sm bg-white border-l border-[#EEE] shadow-xl transition-transform ${
+          open ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        <div className="p-5 border-b border-[#F0F0F0] flex items-center justify-between">
+          <div className="text-sm font-semibold">{SALON.name}</div>
+          <button
+            onClick={onClose}
+            className="p-2 rounded-xl border border-[#EEE] bg-white"
+            aria-label="Menü schließen"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+        <nav className="p-5 flex flex-col gap-3 text-sm font-medium">
+          <Link href="/" className="rounded-2xl border border-[#EEE] p-4 hover:bg-[#FAFAFA]" onClick={onClose}>
+            Home
+          </Link>
+          <Link href="/vorschau" className="rounded-2xl border border-[#EEE] p-4 hover:bg-[#FAFAFA]" onClick={onClose}>
+            Vorschau
+          </Link>
+          <Link href="/preisliste" className="rounded-2xl border border-[#EEE] p-4 hover:bg-[#FAFAFA]" onClick={onClose}>
+            Preisliste
+          </Link>
+          <Link href="/termin" className="rounded-2xl border border-[#111] p-4 hover:bg-[#111] hover:text-white transition" onClick={onClose}>
+            Termin anfragen
+          </Link>
+        </nav>
+      </div>
+    </div>
+  )
+}
+
 export default function Home() {
   const [cookiesAccepted, setCookiesAccepted] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
 
-  // Prüfen, ob Cookie schon gesetzt ist
   useEffect(() => {
     const accepted = getCookie("cookiesAccepted") === "true"
     setCookiesAccepted(accepted)
-
-    if (accepted) {
-      sendVisit().then(() => console.log("Visit gesendet"))
-    }
+    if (accepted) sendVisit().catch(() => {})
   }, [])
 
-  // Funktion zum Setzen der Cookies vom Consent Component
   const handleAcceptCookies = () => {
     setCookie("cookiesAccepted", "true", { path: "/" })
     setCookiesAccepted(true)
-    sendVisit().then(() => console.log("Visit gesendet nach Consent"))
+    sendVisit().catch(() => {})
   }
+
+  const jsonLd = useMemo(
+    () => ({
+      "@context": "https://schema.org",
+      "@type": "BeautySalon",
+      name: SALON.name,
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: SALON.street,
+        addressLocality: "Ibbenbüren",
+        postalCode: "49477",
+        addressCountry: SALON.country
+      }
+    }),
+    []
+  )
 
   return (
     <div className="min-h-screen w-full bg-white text-[#111] overflow-x-hidden">
+      <Script
+        id="json-ld-salon"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       {/* HEADER */}
-      <header className="w-full py-8 sm:py-10 bg-white/70 backdrop-blur-xl border-b border-[#f0f0f0]">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col items-center gap-4">
-          <Image src="/lunera-logo.png" width={100} height={100} alt="Lunera Beauty Logo" className="opacity-90" />
-          <nav className="flex items-center gap-3 sm:gap-4 text-sm sm:text-base font-medium text-[#1A1A1A] tracking-wide whitespace-nowrap">
-            <a href="/" className="text-[#D4AF37] font-semibold">Home</a>
-            <span className="w-2 h-2 bg-[#D4AF37] rounded-full"></span>
-            <a href="/termin" className="hover:text-[#D4AF37] transition">Termin buchen</a>
-            <span className="w-2 h-2 bg-[#D4AF37] rounded-full"></span>
-            <a href="/vorschau" className="hover:text-[#D4AF37] transition">Vorschau</a>
+      <header className="sticky top-0 z-40 w-full bg-white/90 backdrop-blur-xl border-b border-[#f0f0f0]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-5 flex items-center justify-between gap-3">
+          <Link href="/" className="flex items-center gap-3 min-w-0">
+            <Image src="/lunera-logo.png" width={40} height={40} alt="Lunera Beauty" className="opacity-95" priority />
+            <div className="leading-tight min-w-0">
+              <div className="text-sm font-semibold tracking-wide truncate">{SALON.name}</div>
+              <div className="text-xs text-[#666] truncate">{SALON.zipCity}</div>
+            </div>
+          </Link>
+
+          <nav className="hidden sm:flex items-center gap-6 text-sm font-medium text-[#1A1A1A]">
+            <Link href="/" className="text-[#D4AF37] font-semibold">Home</Link>
+            <Link href="/vorschau" className="hover:text-[#D4AF37] transition">Vorschau</Link>
+            <Link href="/preisliste" className="hover:text-[#D4AF37] transition">Preisliste</Link>
+            <Link href="/termin" className="hover:text-[#D4AF37] transition">Termin</Link>
           </nav>
+
+          {/* mobile menu button */}
+          <button
+            onClick={() => setMenuOpen(true)}
+            className="sm:hidden inline-flex items-center justify-center rounded-2xl border border-[#EEE] bg-white p-2.5"
+            aria-label="Menü öffnen"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
+
+          {/* subtle CTA desktop only */}
+          <Link
+            href="/termin"
+            className="hidden sm:inline-flex items-center justify-center rounded-full border border-[#EEE] bg-white px-4 py-2 text-sm font-semibold text-[#111] hover:bg-[#FAFAFA] transition"
+          >
+            Termin
+          </Link>
         </div>
       </header>
 
+      <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
+
       {/* HERO */}
-      <section className="relative w-full flex flex-col items-center text-center px-6 pt-28 sm:pt-32 pb-32 sm:pb-40 bg-gradient-to-b from-white to-[#F3F3F3] overflow-hidden">
-        <TypingText
-          text={["Schönheit. Präzision. Eleganz."]}
-          typingSpeed={90}
-          pauseDuration={800}
-          showCursor={true}
-          cursorCharacter="|"
-          className="text-4xl sm:text-5xl md:text-6xl font-serif font-bold text-[#111] tracking-tight mb-6 sm:mb-8"
-          textColors={['#111', '#111', '#111']}
-        />
+      <section className="relative w-full px-4 sm:px-6 pt-10 sm:pt-16 pb-10 sm:pb-16 bg-gradient-to-b from-white to-[#F5F5F5] overflow-hidden">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-7 sm:gap-10 items-center">
+          <div className="text-center lg:text-left">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#EEE] bg-white px-3 sm:px-4 py-2 text-xs sm:text-sm text-[#333] shadow-sm">
+              <Star className="h-4 w-4" />
+              <span className="font-semibold">Premium Beauty Studio</span>
+              <span className="h-1 w-1 rounded-full bg-[#D4AF37]" aria-hidden />
+              <span className="text-[#666]">Wimpern • Hände • Füße</span>
+            </div>
 
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.3, delay: 3 }}
-          className="max-w-xl sm:max-w-2xl text-base sm:text-lg font-light text-[#555]"
-        >
-          Willkommen bei <span className="font-semibold">Lunera Beauty</span> – dein exklusiver Salon für Wimpern, Hände und Füße.
-        </motion.p>
-      </section>
+            <div className="mt-5 sm:mt-6">
+              <TypingText
+                text={["Schönheit. Präzision. Eleganz."]}
+                typingSpeed={80}
+                pauseDuration={700}
+                showCursor={true}
+                cursorCharacter="|"
+                className="text-[34px] leading-[1.08] sm:text-5xl md:text-6xl font-serif font-bold text-[#111] tracking-tight"
+                textColors={["#111", "#111", "#111"]}
+              />
+            </div>
 
-      {/* SERVICES */}
-      <section className="w-full px-6 py-16 sm:py-20 bg-white">
-        <h3 className="text-3xl sm:text-4xl font-serif font-bold text-center mb-12 sm:mb-16">Unsere Services</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 sm:gap-12 max-w-6xl mx-auto">
-          {[
-            { title: "Wimpernverlängerung", text: "Elegante Wimpern von 1:1 bis Mega-Volume." },
-            { title: "Handpflege", text: "Maniküre, UV-Lack und moderne Nagelverlängerungen." },
-            { title: "Fußpflege", text: "Wellness für saubere und gepflegte Füße." },
-            { title: "Augenpaket", text: "Brauen & Wimpern färben und formen für strahlende Augen." }
-          ].map((s, i) => (
-            <motion.div
-              key={i}
-              whileHover={{ scale: 1.03, y: -2 }}
-              transition={{ duration: 0.3 }}
-              className="p-6 sm:p-8 bg-white border border-[#EAEAEA] shadow-md hover:shadow-xl rounded-2xl transition-all"
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.65, delay: 0.1 }}
+              className="mt-4 sm:mt-5 max-w-xl mx-auto lg:mx-0 text-[15px] sm:text-lg font-light text-[#555] leading-relaxed"
             >
-              <h4 className="text-xl sm:text-2xl font-serif font-semibold mb-2 sm:mb-3">{s.title}</h4>
-              <p className="text-[#555] font-light text-sm sm:text-base leading-relaxed">{s.text}</p>
-            </motion.div>
-          ))}
+              Willkommen bei <span className="font-semibold">{SALON.name}</span> – ruhige, saubere Beauty-Arbeit mit
+              sichtbarer Präzision. Modern, elegant, ohne Overkill.
+            </motion.p>
+
+            <div className="mt-6 flex justify-center lg:justify-start">
+              <Link
+                href="/vorschau"
+                className="inline-flex items-center gap-2 rounded-full border border-[#EEE] bg-white px-5 sm:px-6 py-3 text-sm font-semibold text-[#111] hover:bg-[#FAFAFA] transition"
+              >
+                Arbeiten ansehen <span aria-hidden>→</span>
+              </Link>
+            </div>
+
+            {/* Mobile-first: 2 columns so everything stays readable */}
+            <div className="mt-7 grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <MiniStat icon={ShieldCheck} title="Hygiene" text="Sauber, sorgfältig, professionell." />
+              <MiniStat icon={Sparkles} title="Ästhetik" text="Clean Look mit feinen Details." />
+              <MiniStat icon={MapPin} title="Lage" text={`${SALON.street}, ${SALON.zipCity}`} />
+            </div>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.65, delay: 0.05 }}
+            className="relative"
+          >
+            <div className="rounded-[28px] border border-[#EEE] bg-white shadow-sm overflow-hidden">
+              <div className="relative aspect-[4/3] bg-[#F7F7F7]">
+                <Image
+                  src="/hero.jpg"
+                  alt="Studio Eindruck"
+                  fill
+                  className="object-cover"
+                  priority
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
+              </div>
+              <div className="p-5 sm:p-6">
+                <div className="text-sm font-semibold text-[#111]">Ruhig. Präzise. Elegant.</div>
+                <div className="mt-1 text-sm text-[#666]">Ein Studio, das Details ernst nimmt.</div>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* Cookies */}
+      {/* SERVICES */}
+      <section className="w-full px-4 sm:px-6 py-12 sm:py-16 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center">
+            <h2 className="text-3xl sm:text-4xl font-serif font-bold text-[#111]">Services</h2>
+            <p className="mt-3 text-sm sm:text-base text-[#666] max-w-2xl mx-auto leading-relaxed">
+              Klar, modern, hochwertig – Behandlungen mit Fokus auf Haltbarkeit und ein sauberes Finish.
+            </p>
+          </div>
+
+          {/* Mobile: 1 col (bigger), Tablet: 2 col, Desktop: 4 col */}
+          <div className="mt-8 sm:mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            {SERVICES.map((s) => {
+              const Icon = s.icon
+              return (
+                <motion.div
+                  key={s.title}
+                  whileHover={{ y: -3 }}
+                  transition={{ duration: 0.25 }}
+                  className="rounded-3xl border border-[#EAEAEA] bg-white p-5 sm:p-6 shadow-sm hover:shadow-md transition"
+                >
+                  <div className="rounded-2xl border border-[#EEE] bg-[#FAFAFA] p-3 w-fit">
+                    <Icon className="h-5 w-5 text-[#111]" />
+                  </div>
+                  <h3 className="mt-4 text-lg sm:text-xl font-serif font-semibold">{s.title}</h3>
+                  <p className="mt-2 text-sm text-[#666] leading-relaxed">{s.text}</p>
+                </motion.div>
+              )
+            })}
+          </div>
+
+          <div className="mt-8 sm:mt-10 flex justify-center">
+            <Link
+              href="/preisliste"
+              className="w-full sm:w-auto inline-flex items-center justify-center rounded-full border border-[#EEE] bg-white px-6 py-3 text-sm font-semibold text-[#111] hover:bg-[#FAFAFA] transition"
+            >
+              Preisliste ansehen
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* VALUES */}
+      <section className="w-full px-4 sm:px-6 py-12 sm:py-16 bg-[#FAFAFA] border-y border-[#EEE]">
+        <div className="max-w-6xl mx-auto rounded-3xl border border-[#EEE] bg-white p-5 sm:p-8 shadow-sm">
+          <h3 className="text-2xl sm:text-3xl font-serif font-bold text-[#111]">Wofür Lunera steht</h3>
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm sm:text-base text-[#666]">
+            <div className="rounded-2xl border border-[#EEE] bg-[#FAFAFA] p-5">
+              <div className="text-sm font-semibold text-[#111]">Präzision</div>
+              <div className="mt-1">Symmetrie, saubere Linien, natürliche Balance.</div>
+            </div>
+            <div className="rounded-2xl border border-[#EEE] bg-[#FAFAFA] p-5">
+              <div className="text-sm font-semibold text-[#111]">Hygiene</div>
+              <div className="mt-1">Sorgfalt in jedem Schritt – ohne Kompromisse.</div>
+            </div>
+            <div className="rounded-2xl border border-[#EEE] bg-[#FAFAFA] p-5">
+              <div className="text-sm font-semibold text-[#111]">Ästhetik</div>
+              <div className="mt-1">Modern, clean, elegant – genau “dein” Look.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* COOKIES */}
       <CookieConsent onAccept={handleAcceptCookies} />
 
-      {/* SALON STATUS + MAP */}
-      <SalonStatusMap />
+      {/* SALON */}
+      <SalonInfo />
 
       {/* FOOTER */}
-      <footer className="bg-[#FAFAFA] border-t border-[#EEE] mt-16 sm:mt-20">
-        <div className="max-w-6xl mx-auto px-6 py-10 sm:py-12 text-center text-[#6E6E6E] flex flex-col sm:flex-row justify-between items-center gap-4">
-          <div>© {new Date().getFullYear()} Lunera Beauty</div>
-          <div className="flex gap-4 sm:gap-6">
-            <a href="/impressum" className="hover:text-[#1A1A1A] text-sm sm:text-base">Impressum</a>
-            <a href="/datenschutz" className="hover:text-[#1A1A1A] text-sm sm:text-base">Datenschutz</a>
-            <a href="/preisliste" className="hover:text-[#1A1A1A] text-sm sm:text-base">Preisliste</a>
+      <footer className="bg-[#FAFAFA] border-t border-[#EEE]">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-12 flex flex-col sm:flex-row justify-between items-center gap-4">
+          <div className="text-[#6E6E6E] text-sm">
+            © {new Date().getFullYear()} {SALON.name}
+          </div>
+          <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
+            <Link href="/impressum" className="hover:text-[#1A1A1A] text-sm">
+              Impressum
+            </Link>
+            <Link href="/datenschutz" className="hover:text-[#1A1A1A] text-sm">
+              Datenschutz
+            </Link>
+            <Link href="/preisliste" className="hover:text-[#1A1A1A] text-sm">
+              Preisliste
+            </Link>
           </div>
         </div>
       </footer>
