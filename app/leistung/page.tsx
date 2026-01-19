@@ -94,8 +94,8 @@ function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
           <Link href="/" className="rounded-2xl border border-[#EEE] p-4 hover:bg-[#FAFAFA]" onClick={onClose}>
             Home
           </Link>
-          <Link href="/vorschau" className="rounded-2xl border border-[#111] p-4 bg-[#111] text-white" onClick={onClose}>
-            Vorschau
+          <Link href="/leistung" className="rounded-2xl border border-[#111] p-4 bg-[#111] text-white" onClick={onClose}>
+            Leistung
           </Link>
           <Link href="/preisliste" className="rounded-2xl border border-[#EEE] p-4 hover:bg-[#FAFAFA]" onClick={onClose}>
             Preisliste
@@ -265,10 +265,10 @@ export default function VorschauPremium() {
         title: "Wimpernverlängerung",
         description: "Schöne Wimpern, die deinen Blick verfeinern – von 1:1 bis Volumen.",
         media: [
-          { src: "/test1.jpg", type: "image" },
-          { src: "/test2.jpg", type: "image" },
-          { src: "/test3.jpg", type: "image" },
-          { src: "/test4.mp4", type: "video" }
+          { src: "/wimpern/wimpernextensions1.jpeg", type: "image" },
+          { src: "/wimpern/wimpernextensions2.jpeg", type: "image" },
+          { src: "/wimpern/wimpernextensions3.jpeg", type: "image" },
+          { src: "/wimpern/wimpernextensions4.jpeg", type: "image" }
         ],
         points: ["1:1 Technik & Volumen", "Innovative UV-Technik", "Sehr leicht & schonend"],
         accent: "warm"
@@ -277,10 +277,9 @@ export default function VorschauPremium() {
         title: "Handpflege",
         description: "Elegante, gepflegte Hände durch Maniküre oder Nagelverlängerung.",
         media: [
-          { src: "/test1.jpg", type: "image" },
-          { src: "/test2.jpg", type: "image" },
-          { src: "/test3.jpg", type: "image" },
-          { src: "/test4.mp4", type: "video" }
+          { src: "/handpflege/handpflege1.jpeg", type: "image" },
+          { src: "/handpflege/handpflege2.jpeg", type: "image" },
+          { src: "/handpflege/handpflege3.jpeg", type: "image" },
         ],
         points: ["Klassische Maniküre", "UV-Lack", "Nagelverlängerung"],
         accent: "neutral"
@@ -336,8 +335,8 @@ export default function VorschauPremium() {
             <Link href="/" className="hover:text-[#D4AF37] transition">
               Home
             </Link>
-            <Link href="/vorschau" className="text-[#D4AF37] font-semibold">
-              Vorschau
+            <Link href="/leistung" className="text-[#D4AF37] font-semibold">
+              Leistung
             </Link>
             <Link href="/preisliste" className="hover:text-[#D4AF37] transition">
               Preisliste
@@ -382,7 +381,7 @@ export default function VorschauPremium() {
             transition={{ duration: 0.7, ease: "easeOut" }}
             className="text-[34px] leading-[1.08] sm:text-5xl md:text-6xl font-serif font-bold tracking-tight text-[#111]"
           >
-            Service Vorschau
+            Leistung und Preise
           </motion.h1>
 
           <motion.p
@@ -391,7 +390,7 @@ export default function VorschauPremium() {
             transition={{ duration: 0.9, delay: 0.15, ease: "easeOut" }}
             className="mt-4 text-[15px] sm:text-lg text-[#666] max-w-2xl mx-auto font-light leading-relaxed"
           >
-            Klar, elegant und auf dich abgestimmt – für Ergebnisse, die man sofort sieht.
+            Klar, elegant und auf dich abgestimmt für Ergebnisse, die man sofort sieht.
           </motion.p>
         </div>
       </section>

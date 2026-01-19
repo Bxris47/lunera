@@ -5,6 +5,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { motion } from "framer-motion"
 import { Instagram, MessageCircle, Music2, Menu, X, ArrowRight } from "lucide-react"
+import { cn } from "../../lib/utils"
 
 type Contact = {
   title: string
@@ -18,15 +19,19 @@ const BRAND = { name: "Lunera Beauty", logoSrc: "/lunera-logo.png" } as const
 
 function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
   return (
-    <div className={`sm:hidden fixed inset-0 z-50 transition ${open ? "pointer-events-auto" : "pointer-events-none"}`}>
+    <div
+      className={cn("sm:hidden fixed inset-0 z-50 transition", open ? "pointer-events-auto" : "pointer-events-none")}
+      aria-hidden={!open}
+    >
       <div
-        className={`absolute inset-0 bg-black/30 transition-opacity ${open ? "opacity-100" : "opacity-0"}`}
+        className={cn("absolute inset-0 bg-black/30 transition-opacity", open ? "opacity-100" : "opacity-0")}
         onClick={onClose}
       />
       <div
-        className={`absolute right-0 top-0 h-full w-[86%] max-w-sm bg-white border-l border-[#EEE] shadow-xl transition-transform ${
+        className={cn(
+          "absolute right-0 top-0 h-full w-[86%] max-w-sm bg-white border-l border-[#EEE] shadow-xl transition-transform",
           open ? "translate-x-0" : "translate-x-full"
-        }`}
+        )}
       >
         <div className="p-5 border-b border-[#F0F0F0] flex items-center justify-between">
           <div className="text-sm font-semibold">{BRAND.name}</div>
@@ -39,22 +44,23 @@ function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
           <Link href="/" className="rounded-2xl border border-[#EEE] p-4 hover:bg-[#FAFAFA]" onClick={onClose}>
             Home
           </Link>
-          <Link
-            href="/termin"
-            className="rounded-2xl border border-[#111] p-4 bg-[#111] text-white"
-            onClick={onClose}
-          >
+          <Link href="/leistung" className="rounded-2xl border border-[#EEE] p-4 hover:bg-[#FAFAFA]" onClick={onClose}>
+            Leistung
+          </Link>
+          <Link href="/preisliste" className="rounded-2xl border border-[#EEE] p-4 hover:bg-[#FAFAFA]" onClick={onClose}>
+            Preisliste
+          </Link>
+          <Link href="/termin" className="rounded-2xl border border-[#111] p-4 bg-[#111] text-white" onClick={onClose}>
             Termin
           </Link>
-          <Link href="/vorschau" className="rounded-2xl border border-[#EEE] p-4 hover:bg-[#FAFAFA]" onClick={onClose}>
-            Vorschau
+
+          <div className="mt-2 h-px w-full bg-[#F2F2F2]" />
+
+          <Link href="/impressum" className="rounded-2xl border border-[#EEE] p-4 bg-[#FAFAFA]" onClick={onClose}>
+            Impressum
           </Link>
-          <Link
-            href="/preisliste"
-            className="rounded-2xl border border-[#EEE] p-4 hover:bg-[#FAFAFA]"
-            onClick={onClose}
-          >
-            Preisliste
+          <Link href="/datenschutz" className="rounded-2xl border border-[#EEE] p-4 hover:bg-[#FAFAFA]" onClick={onClose}>
+            Datenschutz
           </Link>
         </nav>
       </div>
@@ -171,8 +177,8 @@ export default function TerminPage() {
             <Link href="/" className="hover:text-[#D4AF37] transition">
               Home
             </Link>
-            <Link href="/vorschau" className="hover:text-[#D4AF37] transition">
-              Vorschau
+            <Link href="/leistung" className="hover:text-[#D4AF37] transition">
+              Leistung
             </Link>
             <Link href="/preisliste" className="hover:text-[#D4AF37] transition">
               Preisliste

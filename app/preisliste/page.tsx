@@ -1,7 +1,7 @@
 "use client";
 
 export default function PreislistePage() {
-  const pdfUrl = "/lunera-preisliste.pdf";
+  const pdfUrl = "/preisliste/lunera-preisliste.pdf";
 
   return (
     <div className="fixed inset-0 bg-gray-100">

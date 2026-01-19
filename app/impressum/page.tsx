@@ -31,14 +31,7 @@ function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
         )}
       >
         <div className="p-5 border-b border-[#F0F0F0] flex items-center justify-between">
-          <div className="flex items-center gap-2 min-w-0">
-            <Image src="/lunera-logo.png" width={34} height={34} alt="Lunera Beauty" className="opacity-95" priority />
-            <div className="min-w-0">
-              <div className="text-sm font-semibold truncate">{SALON.name}</div>
-              <div className="text-xs text-[#666] truncate">{SALON.zipCity}</div>
-            </div>
-          </div>
-
+          <div className="text-sm font-semibold">{SALON.name}</div>
           <button onClick={onClose} className="p-2 rounded-xl border border-[#EEE] bg-white" aria-label="Menü schließen">
             <X className="h-5 w-5" />
           </button>
@@ -48,38 +41,22 @@ function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
           <Link href="/" className="rounded-2xl border border-[#EEE] p-4 hover:bg-[#FAFAFA]" onClick={onClose}>
             Home
           </Link>
-          <Link href="/vorschau" className="rounded-2xl border border-[#EEE] p-4 hover:bg-[#FAFAFA]" onClick={onClose}>
-            Vorschau
+          <Link href="/leistung" className="rounded-2xl border border-[#EEE] p-4 hover:bg-[#FAFAFA]" onClick={onClose}>
+            Leistung
           </Link>
-          <Link
-            href="/preisliste"
-            className="rounded-2xl border border-[#EEE] p-4 hover:bg-[#FAFAFA]"
-            onClick={onClose}
-          >
+          <Link href="/preisliste" className="rounded-2xl border border-[#EEE] p-4 hover:bg-[#FAFAFA]" onClick={onClose}>
             Preisliste
           </Link>
-          <Link
-            href="/termin"
-            className="rounded-2xl border border-[#111] p-4 hover:bg-[#111] hover:text-white transition"
-            onClick={onClose}
-          >
-            Termin anfragen
+          <Link href="/termin" className="rounded-2xl border border-[#EEE] p-4 hover:bg-[#FAFAFA]" onClick={onClose}>
+            Termin
           </Link>
 
           <div className="mt-2 h-px w-full bg-[#F2F2F2]" />
 
-          <Link
-            href="/impressum"
-            className="rounded-2xl border border-[#EEE] p-4 bg-[#FAFAFA] font-semibold"
-            onClick={onClose}
-          >
+          <Link href="/impressum" className="rounded-2xl border border-[#111] p-4 bg-[#111] text-white" onClick={onClose}>
             Impressum
           </Link>
-          <Link
-            href="/datenschutz"
-            className="rounded-2xl border border-[#EEE] p-4 hover:bg-[#FAFAFA]"
-            onClick={onClose}
-          >
+          <Link href="/datenschutz" className="rounded-2xl border border-[#EEE] p-4 hover:bg-[#FAFAFA]" onClick={onClose}>
             Datenschutz
           </Link>
         </nav>
@@ -142,8 +119,8 @@ export default function Impressum() {
             <Link href="/" className="hover:text-[#D4AF37] transition">
               Home
             </Link>
-            <Link href="/vorschau" className="hover:text-[#D4AF37] transition">
-              Vorschau
+            <Link href="/leistung" className="hover:text-[#D4AF37] transition">
+              Leistung
             </Link>
             <Link href="/preisliste" className="hover:text-[#D4AF37] transition">
               Preisliste

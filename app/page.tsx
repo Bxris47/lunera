@@ -8,9 +8,7 @@ import { motion } from "framer-motion"
 import { MapPin, ShieldCheck, Sparkles, Star, Menu, X } from "lucide-react"
 
 import TypingText from "../components/ui/shadcn-io/typing-text"
-import CookieConsent from "./components/CookieConsent"
-import { sendVisit } from "../lib/TrackingClient"
-import { getCookie, setCookie } from "cookies-next"
+import { cn } from "@/lib/utils"
 
 type Weekday =
   | "Montag"
@@ -167,7 +165,6 @@ function SalonInfo() {
             </div>
           </div>
 
-          {/* Mobile-first hours list: bigger tap targets */}
           <ul className="mt-6 divide-y divide-[#F2F2F2] text-sm sm:text-base">
             {HOURS.map((h) => {
               const label = h.open && h.close ? `${h.open} – ${h.close}` : "Geschlossen"
@@ -180,7 +177,6 @@ function SalonInfo() {
             })}
           </ul>
 
-          {/* Only one CTA, but good on mobile */}
           <div className="mt-6">
             <Link
               href="/termin"
@@ -205,51 +201,50 @@ function SalonInfo() {
   )
 }
 
-function MobileMenu({
-  open,
-  onClose
-}: {
-  open: boolean
-  onClose: () => void
-}) {
+function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
   return (
     <div
-      className={`sm:hidden fixed inset-0 z-50 transition ${
-        open ? "pointer-events-auto" : "pointer-events-none"
-      }`}
+      className={cn("sm:hidden fixed inset-0 z-50 transition", open ? "pointer-events-auto" : "pointer-events-none")}
       aria-hidden={!open}
     >
       <div
-        className={`absolute inset-0 bg-black/30 transition-opacity ${open ? "opacity-100" : "opacity-0"}`}
+        className={cn("absolute inset-0 bg-black/30 transition-opacity", open ? "opacity-100" : "opacity-0")}
         onClick={onClose}
       />
       <div
-        className={`absolute right-0 top-0 h-full w-[86%] max-w-sm bg-white border-l border-[#EEE] shadow-xl transition-transform ${
+        className={cn(
+          "absolute right-0 top-0 h-full w-[86%] max-w-sm bg-white border-l border-[#EEE] shadow-xl transition-transform",
           open ? "translate-x-0" : "translate-x-full"
-        }`}
+        )}
       >
         <div className="p-5 border-b border-[#F0F0F0] flex items-center justify-between">
           <div className="text-sm font-semibold">{SALON.name}</div>
-          <button
-            onClick={onClose}
-            className="p-2 rounded-xl border border-[#EEE] bg-white"
-            aria-label="Menü schließen"
-          >
+          <button onClick={onClose} className="p-2 rounded-xl border border-[#EEE] bg-white" aria-label="Menü schließen">
             <X className="h-5 w-5" />
           </button>
         </div>
+
         <nav className="p-5 flex flex-col gap-3 text-sm font-medium">
-          <Link href="/" className="rounded-2xl border border-[#EEE] p-4 hover:bg-[#FAFAFA]" onClick={onClose}>
+          <Link href="/" className="rounded-2xl border border-[#111] p-4 bg-[#111] text-white" onClick={onClose}>
             Home
           </Link>
-          <Link href="/vorschau" className="rounded-2xl border border-[#EEE] p-4 hover:bg-[#FAFAFA]" onClick={onClose}>
-            Vorschau
+          <Link href="/leistung" className="rounded-2xl border border-[#EEE] p-4 hover:bg-[#FAFAFA]" onClick={onClose}>
+            Leistung
           </Link>
           <Link href="/preisliste" className="rounded-2xl border border-[#EEE] p-4 hover:bg-[#FAFAFA]" onClick={onClose}>
             Preisliste
           </Link>
-          <Link href="/termin" className="rounded-2xl border border-[#111] p-4 hover:bg-[#111] hover:text-white transition" onClick={onClose}>
-            Termin anfragen
+          <Link href="/termin" className="rounded-2xl border border-[#EEE] p-4 hover:bg-[#FAFAFA]" onClick={onClose}>
+            Termin
+          </Link>
+
+          <div className="mt-2 h-px w-full bg-[#F2F2F2]" />
+
+          <Link href="/impressum" className="rounded-2xl border border-[#EEE] p-4 bg-[#FAFAFA]" onClick={onClose}>
+            Impressum
+          </Link>
+          <Link href="/datenschutz" className="rounded-2xl border border-[#EEE] p-4 hover:bg-[#FAFAFA]" onClick={onClose}>
+            Datenschutz
           </Link>
         </nav>
       </div>
@@ -258,20 +253,7 @@ function MobileMenu({
 }
 
 export default function Home() {
-  const [cookiesAccepted, setCookiesAccepted] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
-
-  useEffect(() => {
-    const accepted = getCookie("cookiesAccepted") === "true"
-    setCookiesAccepted(accepted)
-    if (accepted) sendVisit().catch(() => {})
-  }, [])
-
-  const handleAcceptCookies = () => {
-    setCookie("cookiesAccepted", "true", { path: "/" })
-    setCookiesAccepted(true)
-    sendVisit().catch(() => {})
-  }
 
   const jsonLd = useMemo(
     () => ({
@@ -297,7 +279,6 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* HEADER */}
       <header className="sticky top-0 z-40 w-full bg-white/90 backdrop-blur-xl border-b border-[#f0f0f0]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-5 flex items-center justify-between gap-3">
           <Link href="/" className="flex items-center gap-3 min-w-0">
@@ -310,12 +291,11 @@ export default function Home() {
 
           <nav className="hidden sm:flex items-center gap-6 text-sm font-medium text-[#1A1A1A]">
             <Link href="/" className="text-[#D4AF37] font-semibold">Home</Link>
-            <Link href="/vorschau" className="hover:text-[#D4AF37] transition">Vorschau</Link>
+            <Link href="/leistung" className="hover:text-[#D4AF37] transition">Leistung</Link>
             <Link href="/preisliste" className="hover:text-[#D4AF37] transition">Preisliste</Link>
             <Link href="/termin" className="hover:text-[#D4AF37] transition">Termin</Link>
           </nav>
 
-          {/* mobile menu button */}
           <button
             onClick={() => setMenuOpen(true)}
             className="sm:hidden inline-flex items-center justify-center rounded-2xl border border-[#EEE] bg-white p-2.5"
@@ -324,7 +304,6 @@ export default function Home() {
             <Menu className="h-5 w-5" />
           </button>
 
-          {/* subtle CTA desktop only */}
           <Link
             href="/termin"
             className="hidden sm:inline-flex items-center justify-center rounded-full border border-[#EEE] bg-white px-4 py-2 text-sm font-semibold text-[#111] hover:bg-[#FAFAFA] transition"
@@ -336,7 +315,6 @@ export default function Home() {
 
       <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
 
-      {/* HERO */}
       <section className="relative w-full px-4 sm:px-6 pt-10 sm:pt-16 pb-10 sm:pb-16 bg-gradient-to-b from-white to-[#F5F5F5] overflow-hidden">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-7 sm:gap-10 items-center">
           <div className="text-center lg:text-left">
@@ -371,14 +349,13 @@ export default function Home() {
 
             <div className="mt-6 flex justify-center lg:justify-start">
               <Link
-                href="/vorschau"
+                href="/leistung"
                 className="inline-flex items-center gap-2 rounded-full border border-[#EEE] bg-white px-5 sm:px-6 py-3 text-sm font-semibold text-[#111] hover:bg-[#FAFAFA] transition"
               >
                 Arbeiten ansehen <span aria-hidden>→</span>
               </Link>
             </div>
 
-            {/* Mobile-first: 2 columns so everything stays readable */}
             <div className="mt-7 grid grid-cols-1 sm:grid-cols-3 gap-3">
               <MiniStat icon={ShieldCheck} title="Hygiene" text="Sauber, sorgfältig, professionell." />
               <MiniStat icon={Sparkles} title="Ästhetik" text="Clean Look mit feinen Details." />
@@ -394,13 +371,14 @@ export default function Home() {
           >
             <div className="rounded-[28px] border border-[#EEE] bg-white shadow-sm overflow-hidden">
               <div className="relative aspect-[4/3] bg-[#F7F7F7]">
-                <Image
-                  src="/hero.jpg"
-                  alt="Studio Eindruck"
-                  fill
-                  className="object-cover"
-                  priority
-                  sizes="(max-width: 1024px) 100vw, 50vw"
+                <video
+                  src="/Studio.mp4"
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  className="absolute inset-0 h-full w-full object-cover"
                 />
               </div>
               <div className="p-5 sm:p-6">
@@ -412,7 +390,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SERVICES */}
       <section className="w-full px-4 sm:px-6 py-12 sm:py-16 bg-white">
         <div className="max-w-6xl mx-auto">
           <div className="text-center">
@@ -422,7 +399,6 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Mobile: 1 col (bigger), Tablet: 2 col, Desktop: 4 col */}
           <div className="mt-8 sm:mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {SERVICES.map((s) => {
               const Icon = s.icon
@@ -454,7 +430,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* VALUES */}
       <section className="w-full px-4 sm:px-6 py-12 sm:py-16 bg-[#FAFAFA] border-y border-[#EEE]">
         <div className="max-w-6xl mx-auto rounded-3xl border border-[#EEE] bg-white p-5 sm:p-8 shadow-sm">
           <h3 className="text-2xl sm:text-3xl font-serif font-bold text-[#111]">Wofür Lunera steht</h3>
@@ -475,13 +450,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* COOKIES */}
-      <CookieConsent onAccept={handleAcceptCookies} />
-
-      {/* SALON */}
       <SalonInfo />
 
-      {/* FOOTER */}
       <footer className="bg-[#FAFAFA] border-t border-[#EEE]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-12 flex flex-col sm:flex-row justify-between items-center gap-4">
           <div className="text-[#6E6E6E] text-sm">

@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server"
+import { NextResponse, type NextRequest } from "next/server"
 import fs from "fs"
 import path from "path"
 import crypto from "crypto"
@@ -13,7 +13,10 @@ export interface Visitor {
   role: string
   country: string
   city: string
+  ip: string
   ipHash: string
+  userAgent: string
+  referer: string
 }
 
 export interface AnalyticsFile {
@@ -38,10 +41,42 @@ function saveAnalytics(data: AnalyticsFile) {
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf8")
 }
 
-function getIp(req: Request) {
-  const xf = req.headers.get("x-forwarded-for")
-  const ip = xf?.split(",")[0]?.trim()
-  return ip && ip.length < 128 ? ip : null
+function getIp(req: NextRequest) {
+  // Next can provide ip (depends on host)
+  const direct = (req as any).ip
+  if (typeof direct === "string" && direct && direct.length < 128) return direct.trim()
+
+  // Cloudflare
+  const cf = req.headers.get("cf-connecting-ip")
+  if (cf && cf.length < 128) return cf.trim()
+
+  // Vercel
+  const vercel = req.headers.get("x-vercel-forwarded-for")
+  if (vercel) {
+    const ip = vercel.split(",")[0].trim()
+    if (ip && ip.length < 128) return ip
+  }
+
+  // Standard proxy header
+  const xff = req.headers.get("x-forwarded-for")
+  if (xff) {
+    const ip = xff.split(",")[0].trim()
+    if (ip && ip.length < 128) return ip
+  }
+
+  // Nginx / other proxies
+  const xri = req.headers.get("x-real-ip")
+  if (xri && xri.length < 128) return xri.trim()
+
+  // RFC 7239 Forwarded
+  const fwd = req.headers.get("forwarded")
+  if (fwd) {
+    const m = fwd.match(/for=(?:"?\[?)([a-fA-F0-9:.]+)(?:\]?"?)/)
+    const ip = m?.[1]
+    if (ip && ip.length < 128) return ip
+  }
+
+  return null
 }
 
 function hashIp(ip: string) {
@@ -94,7 +129,7 @@ function verifyAdminToken(token: string, secret: string) {
   return true
 }
 
-function isAdmin(req: Request) {
+function isAdmin(req: NextRequest) {
   const secret = String(process.env.ADMIN_SESSION_SECRET || "").trim()
   if (!secret) return false
 
@@ -105,7 +140,7 @@ function isAdmin(req: Request) {
   return verifyAdminToken(token, secret)
 }
 
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   if (!isAdmin(req)) return NextResponse.json({ error: "Nicht autorisiert" }, { status: 401 })
 
   const json = loadAnalytics()
@@ -131,7 +166,7 @@ export async function GET(req: Request) {
   })
 }
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
     const body = await req.json().catch(() => null)
     const page = String(body?.page ?? "").trim()
@@ -144,8 +179,20 @@ export async function POST(req: Request) {
     const todayKey = now.toISOString().slice(0, 10)
     const monthKey = now.toISOString().slice(0, 7)
 
-    const ip = getIp(req)
-    const ipHash = ip ? hashIp(ip) : "unknown"
+    const ip = getIp(req) ?? "unknown"
+    const ipHash = ip !== "unknown" ? hashIp(ip) : "unknown"
+
+    const country =
+      req.headers.get("x-vercel-ip-country") ||
+      req.headers.get("cf-ipcountry") ||
+      "unknown"
+
+    const city =
+      req.headers.get("x-vercel-ip-city") ||
+      "Unbekannt"
+
+    const userAgent = req.headers.get("user-agent") || ""
+    const referer = req.headers.get("referer") || ""
 
     const alreadyExists = (json.visitors || []).some(
       (v) => v.ipHash === ipHash && v.page === page && v.date.startsWith(todayKey)
@@ -164,9 +211,12 @@ export async function POST(req: Request) {
         date: now.toISOString(),
         page,
         role,
+        country: String(country),
+        city: String(city),
+        ip,
         ipHash,
-        country: "unknown",
-        city: "Unbekannt"
+        userAgent,
+        referer
       })
 
       saveAnalytics(json)

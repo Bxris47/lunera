@@ -5,13 +5,15 @@
     "2025-12-15": 1,
     "2025-12-21": 1,
     "2025-12-22": 1,
-    "2026-01-16": 3
+    "2026-01-16": 3,
+    "2026-01-17": 2,
+    "2026-01-18": 2
   },
   "month": {
     "2025-12": 6,
-    "2026-01": 3
+    "2026-01": 7
   },
-  "total": 9,
+  "total": 13,
   "visitors": [
     {
       "date": "2025-12-12T07:10:06.028Z",
@@ -84,6 +86,44 @@
       "ipHash": "38475a8ff58c4568e302268f6466578191b5fa3d7517ce54d19e4a2b3aa50b18",
       "country": "unknown",
       "city": "Unbekannt"
+    },
+    {
+      "date": "2026-01-17T00:57:39.494Z",
+      "page": "/",
+      "role": "guest",
+      "ipHash": "bc7f65e94c6135a6880ffcacf39f14c8ee49e9d3d39d3e35225caf5b6fd8f228",
+      "country": "unknown",
+      "city": "Unbekannt"
+    },
+    {
+      "date": "2026-01-17T02:06:01.809Z",
+      "page": "/termin",
+      "role": "guest",
+      "ipHash": "bc7f65e94c6135a6880ffcacf39f14c8ee49e9d3d39d3e35225caf5b6fd8f228",
+      "country": "unknown",
+      "city": "Unbekannt"
+    },
+    {
+      "date": "2026-01-18T04:49:47.080Z",
+      "page": "/",
+      "role": "guest",
+      "country": "unknown",
+      "city": "Unbekannt",
+      "ip": "::ffff:192.168.0.14",
+      "ipHash": "dd4a304ab888c58dd4f62bf0a908e0a1cb01f92647942c544b209e33d2bb83d2",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "referer": "http://192.168.0.14:3000/"
+    },
+    {
+      "date": "2026-01-18T20:49:55.894Z",
+      "page": "/",
+      "role": "guest",
+      "country": "unknown",
+      "city": "Unbekannt",
+      "ip": "::1",
+      "ipHash": "38475a8ff58c4568e302268f6466578191b5fa3d7517ce54d19e4a2b3aa50b18",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "referer": "http://localhost:3000/"
     }
   ]
 }
