@@ -181,10 +181,10 @@ export default function Impressum() {
             </div>
             <div className="flex flex-wrap gap-3">
               <a
-                href="mailto:info@lunerabeauty.de"
+                href="mailto:lunerabeautyy@gmail.com"
                 className="inline-flex items-center gap-2 rounded-full border border-[#EEE] bg-white px-5 py-2.5 text-sm font-semibold hover:bg-[#FAFAFA] transition"
               >
-                <Mail className="h-4 w-4" /> info@lunerabeauty.de
+                <Mail className="h-4 w-4" /> lunerabeautyy@gmail.com
               </a>
               <a
                 href="tel:01234567890"

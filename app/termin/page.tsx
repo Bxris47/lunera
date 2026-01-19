@@ -4,7 +4,7 @@ import { useMemo, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { motion } from "framer-motion"
-import { Instagram, MessageCircle, Music2, Menu, X, ArrowRight } from "lucide-react"
+import { Instagram, MessageCircle, Music2, Menu, X, ArrowRight, Calendar } from "lucide-react"
 import { cn } from "../../lib/utils"
 
 type Contact = {
@@ -12,10 +12,13 @@ type Contact = {
   handle: string
   href: string
   icon: any
-  tone: "whatsapp" | "instagram" | "tiktok"
+  tone: "booking" | "whatsapp" | "instagram" | "tiktok"
 }
 
 const BRAND = { name: "Lunera Beauty", logoSrc: "/lunera-logo.png" } as const
+
+// 👇 HIER deinen HelloCash-Link eintragen:
+const HELLOCASH_URL = "https://bookgoodlook.at/widget/lunera-beauty-216556?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAdGRleAPbIzdleHRuA2FlbQIxMQBzcnRjBmFwcF9pZA8xMjQwMjQ1NzQyODc0MTQAAaeq6fEBusQSA1q6pEzLRyewcTn_oQWnTn9ECpM7G6_VOUtt-CmsYUm1VGzSbg_aem_wxzA8LFgK372eG1xDwzlGg"
 
 function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
   return (
@@ -70,14 +73,22 @@ function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
 
 function ContactIcon({ tone, Icon }: { tone: Contact["tone"]; Icon: any }) {
   const styles =
-    tone === "whatsapp"
-      ? "bg-[#25D366]/10 border-[#25D366]/20"
-      : tone === "instagram"
-        ? "bg-[#D62976]/10 border-[#D62976]/20"
-        : "bg-[#111]/5 border-[#111]/15"
+    tone === "booking"
+      ? "bg-[#D4AF37]/10 border-[#D4AF37]/25"
+      : tone === "whatsapp"
+        ? "bg-[#25D366]/10 border-[#25D366]/20"
+        : tone === "instagram"
+          ? "bg-[#D62976]/10 border-[#D62976]/20"
+          : "bg-[#111]/5 border-[#111]/15"
 
   const iconColor =
-    tone === "whatsapp" ? "text-[#25D366]" : tone === "instagram" ? "text-[#D62976]" : "text-[#111]"
+    tone === "booking"
+      ? "text-[#D4AF37]"
+      : tone === "whatsapp"
+        ? "text-[#25D366]"
+        : tone === "instagram"
+          ? "text-[#D62976]"
+          : "text-[#111]"
 
   return (
     <div className={`h-12 w-12 rounded-2xl border ${styles} flex items-center justify-center`}>
@@ -114,11 +125,13 @@ function ContactCard({ c, i }: { c: Contact; i: number }) {
       </div>
 
       <p className="mt-4 text-sm sm:text-base text-[#555] leading-relaxed">
-        {c.tone === "whatsapp"
-          ? "Schreib uns kurz dein Wunschdatum + Service – wir antworten schnell."
-          : c.tone === "instagram"
-            ? "DM für Fragen, Ergebnisse & Inspiration."
-            : "Kurz & direkt – Updates und Looks."}
+        {c.tone === "booking"
+          ? "Buche deinen Termin direkt online über HelloCash."
+          : c.tone === "whatsapp"
+            ? "Schreib uns kurz dein Wunschdatum + Service – wir antworten schnell."
+            : c.tone === "instagram"
+              ? "DM für Fragen, Ergebnisse & Inspiration."
+              : "Kurz & direkt – Updates und Looks."}
       </p>
 
       <div className="mt-5 h-px w-full bg-[#F2F2F2]" />
@@ -135,25 +148,33 @@ export default function TerminPage() {
 
   const contacts: Contact[] = useMemo(
     () => [
+      // ✅ HelloCash ganz nach oben
+      {
+        title: "HelloCash",
+        handle: "Online Termin buchen",
+        href: HELLOCASH_URL,
+        icon: Calendar,
+        tone: "booking"
+      },
       {
         title: "WhatsApp",
         handle: "Schnell & unkompliziert",
-        href: "https://wa.me/49123456789",
+        href: "https://wa.me/4915170558717",
         icon: MessageCircle,
         tone: "whatsapp"
       },
       {
         title: "Instagram",
         handle: "@lunera_beauty",
-        href: "https://instagram.com/",
+        href: "https://www.instagram.com/lunera.beautyy?igsh=MTNzdGNpc2c5NWx5eg%3D%3D&utm_source=qr",
         icon: Instagram,
         tone: "instagram"
       },
       {
         title: "TikTok",
         handle: "@lunera",
-        href: "https://tiktok.com/@lunera",
-        icon: Music2, // cleaner than png, consistent icon set
+        href: "https://www.tiktok.com/@lunera.beautyy?_r=1&_t=ZG-93CjME9lzaT",
+        icon: Music2,
         tone: "tiktok"
       }
     ],
@@ -241,7 +262,7 @@ export default function TerminPage() {
 
           <div className="mt-7 inline-flex items-center gap-2 rounded-full border border-[#EEE] bg-white px-4 py-2 text-xs sm:text-sm text-[#444] shadow-sm">
             <span className="h-1.5 w-1.5 rounded-full bg-[#D4AF37]" aria-hidden />
-            Tipp: Für die schnellste Antwort → WhatsApp
+            Tipp: Online-Buchung → HelloCash
           </div>
         </div>
       </section>
@@ -282,14 +303,14 @@ export default function TerminPage() {
               <li className="flex items-start gap-3">
                 <span className="mt-2 h-2 w-2 rounded-full bg-[#D4AF37]" aria-hidden />
                 <span>
-                  <span className="font-semibold text-[#111]">Abholung oder digital</span> (PDF/WhatsApp)
+                  <span className="font-semibold text-[#111]">Abholung</span> (Gutscheine sind nur zur Abholung – nicht digital)
                 </span>
               </li>
             </ul>
           </div>
 
           <div className="mt-5 text-xs sm:text-sm text-[#777] leading-relaxed">
-            Tipp: Am schnellsten geht’s über <span className="font-semibold text-[#111]">WhatsApp</span>.
+            Tipp: Schreib uns am schnellsten über <span className="font-semibold text-[#111]">WhatsApp</span>.
           </div>
         </div>
       </main>
